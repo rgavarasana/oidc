@@ -1,0 +1,9 @@
+D:\work\pluralsight\oidc\src\ImageGallery.Model\bin\Debug\netstandard2.0\ImageGallery.Model.deps.json
+D:\work\pluralsight\oidc\src\ImageGallery.Model\bin\Debug\netstandard2.0\ImageGallery.Model.dll
+D:\work\pluralsight\oidc\src\ImageGallery.Model\bin\Debug\netstandard2.0\ImageGallery.Model.pdb
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.csprojResolveAssemblyReference.cache
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.csproj.CoreCompileInputs.cache
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.AssemblyInfoInputs.cache
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.AssemblyInfo.cs
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.dll
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.pdb

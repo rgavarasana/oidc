@@ -1,0 +1,4 @@
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.csprojResolveAssemblyReference.cache
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.csproj.CoreCompileInputs.cache
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.AssemblyInfoInputs.cache
+D:\work\pluralsight\oidc\src\ImageGallery.Model\obj\Debug\netstandard2.0\ImageGallery.Model.AssemblyInfo.cs
