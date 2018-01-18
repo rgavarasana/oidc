@@ -2,17 +2,22 @@
 using ImageGallery.API.Helpers;
 using ImageGallery.API.Services;
 using ImageGallery.Model;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ImageGallery.API.Controllers
 {
     [Route("api/images")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Authorize]
     public class ImagesController : Controller
     {
@@ -41,14 +46,17 @@ namespace ImageGallery.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetImage")]
+        [Authorize(Policy = "MustOwnImage")]
         public IActionResult GetImage(Guid id)
         {
-            var ownerId = this.User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+            
 
-            if (!_galleryRepository.IsImageOwner(ownerId, id))
-            {
-                return StatusCode(403);
-            }
+            //var ownerId = this.User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+
+            //if (!_galleryRepository.IsImageOwner(ownerId, id))
+            //{
+            //    return StatusCode(403);
+            //}
 
             var imageFromRepo = _galleryRepository.GetImage(id);
 
@@ -63,9 +71,11 @@ namespace ImageGallery.API.Controllers
         }
 
         [HttpPost()]
-        [Authorize(Roles = "PaidUser")]
+      //  [Authorize("PaidUser")]
         public IActionResult CreateImage([FromBody] ImageForCreation imageForCreation)
         {
+            WriteOutIdentityInformation().Wait();
+
             if (imageForCreation == null)
             {
                 return BadRequest();
@@ -115,14 +125,15 @@ namespace ImageGallery.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        //[Authorize("MustOwnImage")]
         public IActionResult DeleteImage(Guid id)
         {
-            var ownerId = this.User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+            //var ownerId = this.User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
 
-            if (!_galleryRepository.IsImageOwner(ownerId, id))
-            {
-                return StatusCode(403);
-            }
+            //if (!_galleryRepository.IsImageOwner(ownerId, id))
+            //{
+            //    return StatusCode(403);
+            //}
 
             var imageFromRepo = _galleryRepository.GetImage(id);
 
@@ -142,16 +153,17 @@ namespace ImageGallery.API.Controllers
         }
 
         [HttpPut("{id}")]
+        //[Authorize("MustOwnImage")]
         public IActionResult UpdateImage(Guid id, 
             [FromBody] ImageForUpdate imageForUpdate)
         {
 
-            var ownerId = this.User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+            //var ownerId = this.User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
 
-            if (!_galleryRepository.IsImageOwner(ownerId, id))
-            {
-                return StatusCode(403);
-            }
+            //if (!_galleryRepository.IsImageOwner(ownerId, id))
+            //{
+            //    return StatusCode(403);
+            //}
 
             if (imageForUpdate == null)
             {
@@ -180,6 +192,21 @@ namespace ImageGallery.API.Controllers
             }
 
             return NoContent();
+        }
+
+        public async Task WriteOutIdentityInformation()
+        {
+            Debug.WriteLine("**************************");
+            var identityToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
+            Debug.WriteLine($"Identity Token: {identityToken}");
+
+            foreach (var claim in User.Claims)
+            {
+                Debug.WriteLine($"Claim Type: {claim.Type} - Claim Value: {claim.Value}");
+            }
+
+            Debug.WriteLine("**************************");
+
         }
     }
 }

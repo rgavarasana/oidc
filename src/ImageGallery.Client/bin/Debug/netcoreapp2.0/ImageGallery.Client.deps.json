@@ -26,6 +26,7 @@
           "IdentityModel": "3.0.0",
           "ImageGallery.Model": "1.0.0",
           "Microsoft.AspNetCore.All": "2.0.5",
+          "Microsoft.AspNetCore.Authorization": "2.0.1",
           "Microsoft.NETCore.App": "2.0.0",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "2.0.2"
         },
