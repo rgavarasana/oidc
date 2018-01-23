@@ -76,6 +76,8 @@ namespace Marvin.IDP
             {
                 new Client
                 {
+                    
+                    
                     ClientName = "Image Gallery",
                     ClientId = "imagegalleryclient",
                     ClientSecrets =
@@ -86,6 +88,7 @@ namespace Marvin.IDP
 
                     RedirectUris = { "https://localhost:44363/signin-oidc" },
                     PostLogoutRedirectUris = { "https://localhost:44363/signout-callback-oidc" },
+                    AllowOfflineAccess = true,
                     AllowedScopes = new List<string>
                     {
                         IdentityServer4.IdentityServerConstants.StandardScopes.OpenId,
@@ -95,7 +98,6 @@ namespace Marvin.IDP
                         "imagegalleryapi",
                         "country",
                         "subscriptionlevel"
-
                     },
                     AlwaysIncludeUserClaimsInIdToken = true
                 }
