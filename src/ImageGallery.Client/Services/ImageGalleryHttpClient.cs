@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -21,10 +22,19 @@ namespace ImageGallery.Client.Services
         
         public async Task<HttpClient> GetClient()
         {
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            var expiresIn = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.ExpiresIn);
+            var currentContext = _httpContextAccessor.HttpContext;
+            var accessToken = string.Empty;
 
-            if (accessToken != null)
+            var exipresAt = await currentContext.GetTokenAsync("expires_at");
+            if (string.IsNullOrWhiteSpace(exipresAt) || ( DateTime.Parse(exipresAt).AddSeconds(-60).ToUniversalTime() < DateTime.UtcNow))
+            {
+                accessToken = await RenewTokens();
+            }else
+            {
+                accessToken = await currentContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            }
+
+            if (!string.IsNullOrEmpty(accessToken))
             {
                 _httpClient.SetBearerToken(accessToken);
             }
@@ -34,31 +44,42 @@ namespace ImageGallery.Client.Services
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return _httpClient;
         }
-        
-        //public async Task<string> RenewTokens()
-        //{
-        //    var currentContext = _httpContextAccessor.HttpContext;
 
-        //    //get the metadata
-        //    var discoveryClient = new DiscoveryClient("https://localhost:44356/");
-        //    var metaDataResponse = await discoveryClient.GetAsync();
+        public async Task<string> RenewTokens()
+        {
+            var currentContext = _httpContextAccessor.HttpContext;
 
-        //    //create a new token client to get the tokens
-        //    var tokenClient = new TokenClient(metaDataResponse.TokenEndpoint, "imagegalleryclient", "secret");
+            var authenticateInfo = await currentContext.AuthenticateAsync("Cookies");            
 
-        //    //get the saved refresh token from context
-        //    var currentRefreshToken = await currentContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
-            
-        //    //refresh token from IDP
-        //    var tokenResult = await tokenClient.RequestRefreshTokenAsync(currentRefreshToken);
+            //get the metadata
+            var discoveryClient = new DiscoveryClient("https://localhost:44356/");
+            var metaDataResponse = await discoveryClient.GetAsync();
 
-        //    if (!tokenResult.IsError)
-        //    {
-        //        var expiresAt = DateTime.UtcNow + TimeSpan.FromSeconds(tokenResult.ExpiresIn);
-        //        var expiresClaim = currentContext.User.FindFirst(c => c.Type == "exp").Value;
-                
-        //    }
-        //}
+            //create a new token client to get the tokens
+            var tokenClient = new TokenClient(metaDataResponse.TokenEndpoint, "imagegalleryclient", "secret");
+
+            //get the saved refresh token from context
+            var currentRefreshToken = await currentContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+
+            //refresh token from IDP
+            var tokenResult = await tokenClient.RequestRefreshTokenAsync(currentRefreshToken);
+
+            if (!tokenResult.IsError)
+            {
+                var expiresAt = DateTime.UtcNow + TimeSpan.FromSeconds(tokenResult.ExpiresIn);
+                authenticateInfo.Properties.UpdateTokenValue("expires_at", expiresAt.ToString("o", CultureInfo.InvariantCulture));
+                authenticateInfo.Properties.UpdateTokenValue(OpenIdConnectParameterNames.AccessToken, tokenResult.AccessToken);
+                authenticateInfo.Properties.UpdateTokenValue(OpenIdConnectParameterNames.RefreshToken, tokenResult.RefreshToken);
+
+                await currentContext.SignInAsync("Cookies", authenticateInfo.Principal, authenticateInfo.Properties);
+
+                return tokenResult.AccessToken;
+
+            }else
+            {
+                throw new Exception("Problem encountered while refreshing tokens", tokenResult.Exception);
+            }
+        }
     }
 }
 

@@ -57,6 +57,8 @@ namespace ImageGallery.Client
 
                     //options.Events = new OpenIdConnectEvents()
                     //{
+                        
+                   
                     //    //OnTokenValidated = tokenValidatedContext =>
                     //    //{
 

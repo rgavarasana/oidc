@@ -85,7 +85,7 @@ namespace Marvin.IDP
                         new Secret("secret".Sha256())
                     },
                     AllowedGrantTypes = GrantTypes.Hybrid,
-
+                    AccessTokenLifetime = 120,
                     RedirectUris = { "https://localhost:44363/signin-oidc" },
                     PostLogoutRedirectUris = { "https://localhost:44363/signout-callback-oidc" },
                     AllowOfflineAccess = true,
