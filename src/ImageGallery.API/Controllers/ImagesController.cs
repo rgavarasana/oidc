@@ -34,7 +34,9 @@ namespace ImageGallery.API.Controllers
         [HttpGet()]
         public IActionResult GetImages()
         {
-            var ownerId = this.User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+            var subIdClaim = this.User.Claims.FirstOrDefault(c => c.Type == "sub");
+            var ownerId = subIdClaim?.Value;
+
             // get from repo
             var imagesFromRepo = _galleryRepository.GetImages(ownerId);
 

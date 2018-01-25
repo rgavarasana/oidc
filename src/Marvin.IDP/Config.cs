@@ -67,6 +67,9 @@ namespace Marvin.IDP
             return new List<ApiResource>
             {
                 new ApiResource("imagegalleryapi", "Image Gallery API", new List<string>{ClaimTypes.Role })
+                {
+                    ApiSecrets = {new Secret("apisecret".Sha256())}
+                }
             };
         }
 
@@ -84,6 +87,7 @@ namespace Marvin.IDP
                     {
                         new Secret("secret".Sha256())
                     },
+                    AccessTokenType = AccessTokenType.Reference,
                     AllowedGrantTypes = GrantTypes.Hybrid,
                     AccessTokenLifetime = 120,
                     RedirectUris = { "https://localhost:44363/signin-oidc" },

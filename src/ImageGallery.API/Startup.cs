@@ -36,6 +36,7 @@ namespace ImageGallery.API
                     options.Authority = "https://localhost:44356/";
                     options.ApiName = "imagegalleryapi";
                     options.RequireHttpsMetadata = true;
+                    options.ApiSecret = "apisecret";
 
                 });
 
