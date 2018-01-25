@@ -25,7 +25,9 @@ namespace Marvin.IDP
                         new Claim("given_name", "Frank"),
                         new Claim("family_name", "Underwood"),
                         new Claim("address", "234 South Street"),
-                        new Claim(ClaimTypes.Role, "FreeUser")
+                        new Claim(ClaimTypes.Role, "FreeUser"),
+                        new Claim("subscriptionlevel", "FreeUser"),
+                        new Claim("country", "nl")
                     }
                 },
                 new TestUser
@@ -39,7 +41,9 @@ namespace Marvin.IDP
                         new Claim("given_name", "Claire"),
                         new Claim("family_name", "Underwood"),
                         new Claim("address", "123 Main Street"),
-                        new Claim(ClaimTypes.Role, "PaidUser")
+                        new Claim(ClaimTypes.Role, "PaidUser"),
+                        new Claim("subscriptionlevel", "PaidUser"),
+                        new Claim("country", "be")
                     }
                 }
             };
@@ -52,7 +56,9 @@ namespace Marvin.IDP
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
                 new IdentityResources.Address(),
-                new IdentityResource("roles","Your role(s)",new List<string>{ ClaimTypes.Role})
+                new IdentityResource("roles","Your role(s)",new List<string>{ ClaimTypes.Role}),
+                new IdentityResource("country","The country you're living in",new List<string>{"country"}),
+                new IdentityResource("subscriptionlevel", "Your subscription level", new List<string> {"subscriptionlevel"})
             };
         }
 
@@ -61,6 +67,9 @@ namespace Marvin.IDP
             return new List<ApiResource>
             {
                 new ApiResource("imagegalleryapi", "Image Gallery API", new List<string>{ClaimTypes.Role })
+                {
+                    ApiSecrets = {new Secret("apisecret".Sha256())}
+                }
             };
         }
 
@@ -70,23 +79,29 @@ namespace Marvin.IDP
             {
                 new Client
                 {
+                    
+                    
                     ClientName = "Image Gallery",
                     ClientId = "imagegalleryclient",
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
+                    AccessTokenType = AccessTokenType.Reference,
                     AllowedGrantTypes = GrantTypes.Hybrid,
-
+                    AccessTokenLifetime = 120,
                     RedirectUris = { "https://localhost:44363/signin-oidc" },
                     PostLogoutRedirectUris = { "https://localhost:44363/signout-callback-oidc" },
+                    AllowOfflineAccess = true,
                     AllowedScopes = new List<string>
                     {
                         IdentityServer4.IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServer4.IdentityServerConstants.StandardScopes.Profile,
                         IdentityServer4.IdentityServerConstants.StandardScopes.Address,
                         "roles",
-                        "imagegalleryapi"
+                        "imagegalleryapi",
+                        "country",
+                        "subscriptionlevel"
                     },
                     AlwaysIncludeUserClaimsInIdToken = true
                 }

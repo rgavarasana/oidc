@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IdentityModel.Tokens.Jwt;
 using IdentityServer4.AccessTokenValidation;
+using ImageGallery.API.Authorization;
 using ImageGallery.API.Entities;
 using ImageGallery.API.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace ImageGallery.API
 {
@@ -31,23 +27,49 @@ namespace ImageGallery.API
         {
             services.AddMvc();
 
-            // register the DbContext on the container, getting the connection string from
-            // appSettings (note: use this during development; in a production environment,
-            // it's better to store the connection string in an environment variable)
-            var connectionString = Configuration["connectionStrings:imageGalleryDBConnectionString"];
-            services.AddDbContext<GalleryContext>(o => o.UseSqlServer(connectionString));
 
-            // register the repository
-            services.AddScoped<IGalleryRepository, GalleryRepository>();
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
                     options.Authority = "https://localhost:44356/";
                     options.ApiName = "imagegalleryapi";
-                    //options.RequireHttpsMetadata = true;
-                    
+                    options.RequireHttpsMetadata = true;
+                    options.ApiSecret = "apisecret";
+
                 });
+
+            services.AddAuthorization(authorizationOptions =>
+            {
+                authorizationOptions.AddPolicy("MustOwnImage",
+                    policyBuilder =>
+                    {
+                        policyBuilder.RequireAuthenticatedUser();
+                        policyBuilder.Requirements.Add(new MustOwnImageRequirement());
+                    });
+
+                authorizationOptions.AddPolicy("PaidUser",
+                    policyBuilder =>
+                    {
+                        policyBuilder.RequireAuthenticatedUser();
+                        policyBuilder.RequireClaim("subscriptionlevel", "PaidUser");
+                    });
+            });
+
+
+            // register the DbContext on the container, getting the connection string from
+            // appSettings (note: use this during development; in a production environment,
+            // it's better to store the connection string in an environment variable)
+            var connectionString = Configuration["connectionStrings:imageGalleryDBConnectionString"];
+
+            services.AddDbContext<GalleryContext>(o => o.UseSqlServer(connectionString));
+
+            services.AddScoped<IAuthorizationHandler, MustOwnImageHandler>();
+
+            // register the repository
+            services.AddScoped<IGalleryRepository, GalleryRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

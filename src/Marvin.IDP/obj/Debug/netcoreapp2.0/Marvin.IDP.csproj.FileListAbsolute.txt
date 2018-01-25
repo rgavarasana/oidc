@@ -20,14 +20,3 @@ D:\work\pluralsight\core_oauth2\03\start\src\Marvin.IDP\obj\Debug\netcoreapp2.0\
 D:\work\pluralsight\core_oauth2\03\start\src\Marvin.IDP\obj\Debug\netcoreapp2.0\Marvin.IDP.AssemblyInfo.cs
 D:\work\pluralsight\core_oauth2\03\start\src\Marvin.IDP\obj\Debug\netcoreapp2.0\Marvin.IDP.dll
 D:\work\pluralsight\core_oauth2\03\start\src\Marvin.IDP\obj\Debug\netcoreapp2.0\Marvin.IDP.pdb
-D:\work\pluralsight\oidc\src\Marvin.IDP\bin\Debug\netcoreapp2.0\Marvin.IDP.deps.json
-D:\work\pluralsight\oidc\src\Marvin.IDP\bin\Debug\netcoreapp2.0\Marvin.IDP.runtimeconfig.json
-D:\work\pluralsight\oidc\src\Marvin.IDP\bin\Debug\netcoreapp2.0\Marvin.IDP.runtimeconfig.dev.json
-D:\work\pluralsight\oidc\src\Marvin.IDP\bin\Debug\netcoreapp2.0\Marvin.IDP.dll
-D:\work\pluralsight\oidc\src\Marvin.IDP\bin\Debug\netcoreapp2.0\Marvin.IDP.pdb
-D:\work\pluralsight\oidc\src\Marvin.IDP\obj\Debug\netcoreapp2.0\Marvin.IDP.csprojResolveAssemblyReference.cache
-D:\work\pluralsight\oidc\src\Marvin.IDP\obj\Debug\netcoreapp2.0\Marvin.IDP.csproj.CoreCompileInputs.cache
-D:\work\pluralsight\oidc\src\Marvin.IDP\obj\Debug\netcoreapp2.0\Marvin.IDP.AssemblyInfoInputs.cache
-D:\work\pluralsight\oidc\src\Marvin.IDP\obj\Debug\netcoreapp2.0\Marvin.IDP.AssemblyInfo.cs
-D:\work\pluralsight\oidc\src\Marvin.IDP\obj\Debug\netcoreapp2.0\Marvin.IDP.dll
-D:\work\pluralsight\oidc\src\Marvin.IDP\obj\Debug\netcoreapp2.0\Marvin.IDP.pdb

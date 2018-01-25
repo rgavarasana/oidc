@@ -27,9 +27,6 @@ namespace ImageGallery.Client
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-
-
-
             services.AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -50,12 +47,18 @@ namespace ImageGallery.Client
                     options.ResponseType = "code id_token";
                     options.ClientSecret = "secret";
                     options.GetClaimsFromUserInfoEndpoint = true;
+                    
+                    options.Scope.Add("offline_access");
                     options.Scope.Add("address");
                     options.Scope.Add("roles");                    
                     options.Scope.Add("imagegalleryapi");
+                    options.Scope.Add("country");
+                    options.Scope.Add("subscriptionlevel");
 
                     //options.Events = new OpenIdConnectEvents()
                     //{
+                        
+                   
                     //    //OnTokenValidated = tokenValidatedContext =>
                     //    //{
 
@@ -83,6 +86,15 @@ namespace ImageGallery.Client
                     //};
                 });
 
+            services.AddAuthorization(authorizationOptions =>
+            {
+                authorizationOptions.AddPolicy("CanOrderFrame", policyBuilder =>
+                {
+                    policyBuilder.RequireAuthenticatedUser();
+                    policyBuilder.RequireClaim("country", "be");
+                    policyBuilder.RequireClaim("subscriptionlevel", "PaidUser");
+                });
+            });
 
             // register an IHttpContextAccessor so we can access the current
             // HttpContext in services by injecting it
@@ -90,6 +102,8 @@ namespace ImageGallery.Client
 
             // register an IImageGalleryHttpClient
             services.AddScoped<IImageGalleryHttpClient, ImageGalleryHttpClient>();
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
