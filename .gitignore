@@ -1,8 +1,8 @@
-/Source/**/*.dll
-/Source/**/*.exe
+/src/**/*.dll
+/src/**/*.exe
 **/.vs
 **/*.jfm
-/.vs/**
+.vs/**
 **/bin
 **/obj
 *.user
@@ -17,6 +17,9 @@
 
 # User-specific files
 *.suo
+*.ide
+*.ide-shm
+*.ide-wal
 *.user
 *.userosscache
 *.sln.docstates
