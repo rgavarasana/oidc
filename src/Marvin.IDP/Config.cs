@@ -89,6 +89,7 @@ namespace Marvin.IDP
                     },
                     AccessTokenType = AccessTokenType.Reference,
                     AllowedGrantTypes = GrantTypes.Hybrid,
+                    RequireConsent = false,
                     AccessTokenLifetime = 120,
                     RedirectUris = { "https://localhost:44363/signin-oidc" },
                     PostLogoutRedirectUris = { "https://localhost:44363/signout-callback-oidc" },
