@@ -34,7 +34,10 @@ namespace ImageGallery.API.Controllers
         [HttpGet()]
         public IActionResult GetImages()
         {
-            var ownerId = this.User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+            WriteOutIdentityInformation().Wait();
+            var subIdClaim = this.User.Claims.FirstOrDefault(c => c.Type == "sub");
+            var ownerId = subIdClaim?.Value;
+
             // get from repo
             var imagesFromRepo = _galleryRepository.GetImages(ownerId);
 
@@ -176,17 +179,13 @@ namespace ImageGallery.API.Controllers
 
         public async Task WriteOutIdentityInformation()
         {
-            Debug.WriteLine("**************************");
-            var identityToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
-            Debug.WriteLine($"Identity Token: {identityToken}");
+            var accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            Debug.WriteLine($"Access Token: {accessToken}");
 
             foreach (var claim in User.Claims)
             {
                 Debug.WriteLine($"Claim Type: {claim.Type} - Claim Value: {claim.Value}");
             }
-
-            Debug.WriteLine("**************************");
-
         }
     }
 }

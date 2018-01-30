@@ -47,6 +47,8 @@ namespace ImageGallery.Client
                     options.ResponseType = "code id_token";
                     options.ClientSecret = "secret";
                     options.GetClaimsFromUserInfoEndpoint = true;
+                    
+                    options.Scope.Add("offline_access");
                     options.Scope.Add("address");
                     options.Scope.Add("roles");                    
                     options.Scope.Add("imagegalleryapi");
@@ -55,6 +57,8 @@ namespace ImageGallery.Client
 
                     //options.Events = new OpenIdConnectEvents()
                     //{
+                        
+                   
                     //    //OnTokenValidated = tokenValidatedContext =>
                     //    //{
 
