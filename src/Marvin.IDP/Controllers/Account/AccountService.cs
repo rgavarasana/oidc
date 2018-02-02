@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using System.Diagnostics;
 
 namespace Marvin.IDP.Controllers.Account
 {
@@ -49,7 +50,7 @@ namespace Marvin.IDP.Controllers.Account
             }
 
             var schemes = await _schemeProvider.GetAllSchemesAsync();
-
+            Debug.WriteLine($"Windows enabled - {AccountOptions.WindowsAuthenticationEnabled}");
             var providers = schemes
                 .Where(x => x.DisplayName != null || 
                             (AccountOptions.WindowsAuthenticationEnabled && 
@@ -57,7 +58,7 @@ namespace Marvin.IDP.Controllers.Account
                 )
                 .Select(x => new ExternalProvider
                 {
-                    DisplayName = x.DisplayName,
+                    DisplayName = x.DisplayName??x.Name,
                     AuthenticationScheme = x.Name
                 }).ToList();
 
@@ -82,7 +83,8 @@ namespace Marvin.IDP.Controllers.Account
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
                 Username = context?.LoginHint,
-                ExternalProviders = providers.ToArray()
+                ExternalProviders = providers.ToArray(),
+                
             };
         }
 

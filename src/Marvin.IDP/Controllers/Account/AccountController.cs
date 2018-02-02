@@ -19,6 +19,7 @@ using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using Marvin.IDP.Services;
+using Marvin.IDP.Controllers.UserRegistration;
 
 namespace Marvin.IDP.Controllers.Account
 {
@@ -65,7 +66,13 @@ namespace Marvin.IDP.Controllers.Account
             if (vm.IsExternalLoginOnly)
             {
                 // we only have one option for logging in and it's an external provider
-                return await ExternalLogin(vm.ExternalLoginScheme, returnUrl);
+                var registrationInputModel = new RegistrationInputModel
+                {
+                    Provider = vm.ExternalLoginScheme,
+                    ReturnUrl = returnUrl,
+
+                };
+                return await ExternalLogin(registrationInputModel);
             }
 
             return View(vm);
@@ -147,14 +154,15 @@ namespace Marvin.IDP.Controllers.Account
         /// initiate roundtrip to external authentication provider
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> ExternalLogin(string provider, string returnUrl)
+        public async Task<IActionResult> ExternalLogin(RegistrationInputModel registrationInputModel)
         {
+            var provider = registrationInputModel.Provider;
             var props = new AuthenticationProperties()
             {
                 RedirectUri = Url.Action("ExternalLoginCallback"),
                 Items =
                 {
-                    { "returnUrl", returnUrl }
+                    { "returnUrl", registrationInputModel.ReturnUrl }
                 }
             };
 
@@ -206,8 +214,9 @@ namespace Marvin.IDP.Controllers.Account
         /// Post processing of external authentication
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> ExternalLoginCallback()
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl)
         {
+            //string returnUrl = string.Empty;
             // read external identity from the temporary cookie
             var result = await HttpContext.AuthenticateAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
             if (result?.Succeeded != true)
@@ -242,12 +251,22 @@ namespace Marvin.IDP.Controllers.Account
             // external provider's authentication result, and provision the user as you see fit.
             // 
             // check if the external user is already provisioned
-            var user = _users.FindByExternalProvider(provider, userId);
+           // var user = _users.FindByExternalProvider(provider, userId);
+            var user = _marvinUserRepository.GetUserByProvider(provider, userId); // userid is the external provider key
             if (user == null)
             {
+                var returnUrlAfterRegistration = Url.Action("ExternalLoginCallback", new { returnUrl = returnUrl });
+
+                var continueWithUrl = Url.Action("RegisterUser", "UserRegistration", new { returnUrl = returnUrlAfterRegistration, provider = provider, providerUserId = userId });
+
+                return Redirect(continueWithUrl);
+
                 // this sample simply auto-provisions new external user
                 // another common approach is to start a registrations workflow first
-                user = _users.AutoProvisionUser(provider, userId, claims);
+
+                //user = _users.AutoProvisionUser(provider, userId, claims);
+               // _marvinUserRepository.AddUser(new Entities.User {Claims = userClaims, IsActive = true, SubjectId = userId,  })
+                //_marvinUserRepository.AddUserLogin(userId, provider, userId);
             }
 
             var additionalClaims = new List<Claim>();
@@ -277,7 +296,7 @@ namespace Marvin.IDP.Controllers.Account
             await HttpContext.SignOutAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
 
             // validate return URL and redirect back to authorization endpoint or a local page
-            var returnUrl = result.Properties.Items["returnUrl"];
+            returnUrl = result.Properties.Items["returnUrl"];
             if (_interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
