@@ -22,10 +22,15 @@ namespace Marvin.IDP.Controllers.UserRegistration
         }
 
         [HttpGet]
-        public IActionResult RegisterUser(string returnUrl)
+        //public IActionResult RegisterUser(string returnUrl)
+        public IActionResult RegisterUser(RegistrationInputModel registrationInputModel)
         {
-            var vm = new RegisterUserViewModel();
-            vm.ReturnUrl = returnUrl;
+            var vm = new RegisterUserViewModel
+            {
+                ReturnUrl = registrationInputModel.ReturnUrl,
+                Provider = registrationInputModel.Provider,
+                ProviderUserId = registrationInputModel.ProviderUserId
+            };
             return View(vm);
         }
 
@@ -73,12 +78,7 @@ namespace Marvin.IDP.Controllers.UserRegistration
                 {
                     AuthenticationProperties props = null;
                     await HttpContext.SignInAsync(userToCreate.SubjectId, userToCreate.Username, props);
-                    //var userIdentity = new ClaimsIdentity();
-                    //userIdentity.AddClaim(new Claim("sid", userToCreate.SubjectId));
-                    //userIdentity.AddClaim(new Claim("sub", userToCreate.Username));
-                    //var userPrincipal = new ClaimsPrincipal(userIdentity);
-                    //// log the user in
-                    //await HttpContext.SignInAsync(userPrincipal);
+
                 }
 
                 // continue with the flow     
