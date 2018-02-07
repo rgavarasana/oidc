@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.Google;
+using IdentityServer4;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Marvin.IDP
 {
@@ -42,6 +45,13 @@ namespace Marvin.IDP
                 .AddInMemoryClients(Config.GetClients())
                 .AddInMemoryApiResources(Config.GetApiResources());
 
+            services.AddAuthentication() //CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddGoogle("Google", o =>
+                {
+                    o.ClientId = "428263776906-migfnplkenutb2c9k79gi6kemcu2eqh3.apps.googleusercontent.com";
+                    o.ClientSecret = "IVdCZw7YM_m0YzNnHlE0aX91";
+                    o.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                });
             services.AddMvc();
         }
 
@@ -59,7 +69,18 @@ namespace Marvin.IDP
             marvinUserContext.Database.Migrate();
             marvinUserContext.EnsureSeedDataForContext();
 
+            
             app.UseIdentityServer();
+          //  app.UseAuthentication();
+
+
+            //app.UseGoogleAuthentication(new GoogleOptions
+            //{
+            //    ClientId = "428263776906-migfnplkenutb2c9k79gi6kemcu2eqh3.apps.googleusercontent.com",
+            //    ClientSecret= "IVdCZw7YM_m0YzNnHlE0aX91",
+            //    SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
+                
+            //});
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
             
