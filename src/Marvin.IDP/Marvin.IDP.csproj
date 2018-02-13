@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\IdentityServer\PersistedGrantDb\" />
     <Folder Include="Entities\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>

@@ -49,11 +49,12 @@ namespace Marvin.IDP
                 //.AddDeveloperSigningCredential()
                 .AddSigningCredential(LoadCertificateFromStore())
                 .AddMarvinUserStore()
-                .AddConfigurationStore(options => options.ConfigureDbContext = builder => builder.UseSqlServer(identityServerDataDBConnectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
-                //.AddTestUsers(Config.GetUsers())
-           //     .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddConfigurationStore(options => options.ConfigureDbContext = builder => builder.UseSqlServer(identityServerDataDBConnectionString, sql => sql.MigrationsAssembly(migrationsAssembly)))
+                .AddOperationalStore(options => options.ConfigureDbContext  = builder => builder.UseSqlServer(identityServerDataDBConnectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
+            //.AddTestUsers(Config.GetUsers())
+            //     .AddInMemoryIdentityResources(Config.GetIdentityResources())
             //    .AddInMemoryClients(Config.GetClients())
-          //      .AddInMemoryApiResources(Config.GetApiResources());
+            //      .AddInMemoryApiResources(Config.GetApiResources());
 
             services.AddAuthentication() //CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddGoogle("Google", o =>
@@ -66,7 +67,8 @@ namespace Marvin.IDP
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, MarvinUserContext marvinUserContext, ConfigurationDbContext configurationDbContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, MarvinUserContext marvinUserContext, ConfigurationDbContext configurationDbContext,
+            PersistedGrantDbContext  persistedGrantDbContext)
         {
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
@@ -78,6 +80,8 @@ namespace Marvin.IDP
 
             configurationDbContext.Database.Migrate();
             configurationDbContext.EnsureSeedDataForContext();
+
+            persistedGrantDbContext.Database.Migrate();
 
             marvinUserContext.Database.Migrate();
             marvinUserContext.EnsureSeedDataForContext();
@@ -105,7 +109,7 @@ namespace Marvin.IDP
 
         private X509Certificate2 LoadCertificateFromStore()
         {
-            string thumbPrint = "C4AEA0526A36BE6A50E813E23753CFC1793F5A97";
+            string thumbPrint = Configuration["SigningCertThumbPrint"];
             using (var store = new X509Store(StoreName.My, StoreLocation.LocalMachine))
             {
                 store.Open(OpenFlags.ReadOnly);
