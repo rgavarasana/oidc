@@ -24,3 +24,16 @@ D:\work\pluralsight\core_oauth2\03\start\src\ImageGallery.Client\obj\Debug\netco
 D:\work\pluralsight\core_oauth2\03\start\src\ImageGallery.Client\obj\Debug\netcoreapp2.0\ImageGallery.Client.AssemblyInfo.cs
 D:\work\pluralsight\core_oauth2\03\start\src\ImageGallery.Client\obj\Debug\netcoreapp2.0\ImageGallery.Client.dll
 D:\work\pluralsight\core_oauth2\03\start\src\ImageGallery.Client\obj\Debug\netcoreapp2.0\ImageGallery.Client.pdb
+D:\work\pluralsight\oidc\src\ImageGallery.Client\bin\Debug\netcoreapp2.0\ImageGallery.Client.deps.json
+D:\work\pluralsight\oidc\src\ImageGallery.Client\bin\Debug\netcoreapp2.0\ImageGallery.Client.runtimeconfig.json
+D:\work\pluralsight\oidc\src\ImageGallery.Client\bin\Debug\netcoreapp2.0\ImageGallery.Client.runtimeconfig.dev.json
+D:\work\pluralsight\oidc\src\ImageGallery.Client\bin\Debug\netcoreapp2.0\ImageGallery.Client.dll
+D:\work\pluralsight\oidc\src\ImageGallery.Client\bin\Debug\netcoreapp2.0\ImageGallery.Client.pdb
+D:\work\pluralsight\oidc\src\ImageGallery.Client\bin\Debug\netcoreapp2.0\ImageGallery.Model.dll
+D:\work\pluralsight\oidc\src\ImageGallery.Client\bin\Debug\netcoreapp2.0\ImageGallery.Model.pdb
+D:\work\pluralsight\oidc\src\ImageGallery.Client\obj\Debug\netcoreapp2.0\ImageGallery.Client.csprojResolveAssemblyReference.cache
+D:\work\pluralsight\oidc\src\ImageGallery.Client\obj\Debug\netcoreapp2.0\ImageGallery.Client.csproj.CoreCompileInputs.cache
+D:\work\pluralsight\oidc\src\ImageGallery.Client\obj\Debug\netcoreapp2.0\ImageGallery.Client.AssemblyInfoInputs.cache
+D:\work\pluralsight\oidc\src\ImageGallery.Client\obj\Debug\netcoreapp2.0\ImageGallery.Client.AssemblyInfo.cs
+D:\work\pluralsight\oidc\src\ImageGallery.Client\obj\Debug\netcoreapp2.0\ImageGallery.Client.dll
+D:\work\pluralsight\oidc\src\ImageGallery.Client\obj\Debug\netcoreapp2.0\ImageGallery.Client.pdb

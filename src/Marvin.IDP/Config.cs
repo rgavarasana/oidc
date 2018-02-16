@@ -105,6 +105,17 @@ namespace Marvin.IDP
                         "subscriptionlevel"
                     },
                     AlwaysIncludeUserClaimsInIdToken = true
+                },
+                new Client
+                {
+                    ClientId = "imagegalleryimplicit",
+                    ClientName = "Image Gallery (Implicit)",
+                    AllowedGrantTypes = GrantTypes.Implicit,                    
+                    AllowedScopes  = new List<string>
+                    {
+                        "imagegalleryapi",
+                    },
+                    RedirectUris = { "https://localhost:44335/callback.html" }
                 }
             };
         }
